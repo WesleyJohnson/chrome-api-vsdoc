@@ -1,0 +1,31 @@
+#labels Featured
+#About chrome-api-vsdoc
+
+= About chrome-api-vsdoc =
+
+This project was designed to aid authors in the creation of Google Chrome Extensions when authoring in the Visual Studio IDE.
+
+By referencing the chrome-api-vsdoc.js file in your extension's source code, Visual Studio can provide intellisense when programming against the Chrome APIs.
+
+= Supported APIs =
+
+All of the API calls listed on the [http://code.google.com/chrome/extensions/api_index.html Chrome API] page as of April 30th, 2010 are supported.
+ * chrome.bookmarks
+ * chrome.browserAction
+ * chrome.extension
+ * chrome.i8n
+ * chrome.pageAction
+ * chrome.tabs
+ * chrome.windows
+
+= How to use =
+
+To take advantage of this project when authoring your Chrome Extensions, take the following steps:
+ * Make sure you are using Visual Studio 2008 or higher to take advantage of intellisense for JavaScript.
+ * Copy the chrome-api-vsdoc.js file into your extension's source code directory.
+ * Add the following reference inside any of your extension's source code files 
+{{{
+///<reference path="chrome-api-vsdoc.js"/>
+}}}
+
+Please be aware that this file is intended to be used for intellisense only and should not be used inside _script_ tags in your project. You can safely remove the chrome-api-vsdoc.js file before publishing your extension.
