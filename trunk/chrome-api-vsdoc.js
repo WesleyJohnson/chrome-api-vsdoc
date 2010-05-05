@@ -1,4 +1,4 @@
-﻿// <copyright project="http://code.google.com/p/chrome-api-vsdoc/" file="chrome-api-vsdoc.js">
+﻿// <copyright project="http://code.google.com/p/chrome-api-vsdoc/" file="chrome-api-vsdoc.js" author="Wesley Johnson">
 // This source is licensed under The GNU General Public License (GPL) Version 2
 // </copyright>
 
