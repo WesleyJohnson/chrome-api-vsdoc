@@ -12,6 +12,7 @@ By referencing the chrome-api-vsdoc.js file in your extension's source code, Vis
 All of the API calls listed on the [http://code.google.com/chrome/extensions/api_index.html Chrome API] page as of April 30th, 2010 are supported.
  * chrome.bookmarks
  * chrome.browserAction
+ * chrome.contextMenu (BETA version of Chrome)
  * chrome.extension
  * chrome.i8n
  * chrome.pageAction
