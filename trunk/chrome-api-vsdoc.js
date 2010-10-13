@@ -235,7 +235,56 @@ chrome =
             }
         }
     },
-    i8n: {
+    history: {
+        addUrl:
+        function (details) {
+            ///<summary>Adds a URL to the history at the current time with a transition type of "link".</summary>
+            ///<param name="details" type="Object">{url: (string)}</param>
+        },
+        deleteAll:
+        function (callback) {
+            ///<summary>Deletes all items from the history.</summary>
+            ///<param name="callback" type="Function">function(){...}</param>            
+        },
+        deleteRange:
+        function (range, callback) {
+            ///<summary>Removes all items within the specified date range from the history. Pages will not be removed from the history unless all visits fall within the range.</summary>
+            ///<param name="range" type="Object">{startTime: (number), endTime: (number)}</param>
+            ///<param name="callback" type="Function">function(){...}</param>            
+        },
+        deleteUrl:
+        function (details) {
+            ///<summary>Removes all occurrences of the given URL from the history.</summary>
+            ///<param name="details" type="Object">{url: (string)}</param>
+        },
+        getVisits:
+        function (details, callback) {
+            ///<summary>Retrieve information about visits to a URL.</summary>
+            ///<param name="details" type="Object">{url: (string)}</param>
+            ///<param name="callback" type="Function">function(array of VisitItem results){...}</param>   
+        },
+        search:
+        function (query, callback) {
+            ///<summary>Search the history for the last visit time of each page matching the query.</summary>
+            ///<param name="query" type="Object">{text: (string), startTime: (number), endTime: (number), maxResults: (integer)}</param>
+            ///<param name="callback" type="Function">function(array of HistoryItem results){...}</param>   
+        },
+        onVisitRemoved: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when one or more URLs are removed from the history service. When all visits have been removed the URL is purged from history.</summary>
+                ///<param name="listener" type="Function">function(Object removed) {...}</param>
+            }
+        },
+        onVisited: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when one or more URLs are removed from the history service. When all visits have been removed the URL is purged from history.</summary>
+                ///<param name="listener" type="Function">function(HistoryItem  result) {...}</param>
+            }
+        }
+    },
+    i18n: {
         getAcceptLanguages:
         function (callback) {
             ///<summary>Gets the accept-languages of the browser. This is different from the locale used by the browser; to get the locale, use window.navigator.language.</summary>
@@ -514,6 +563,25 @@ function Event()
     this.removeListener = function (listener) { };
     this.hasListener = function (listener) { };
     this.hasListeners = function (listener) { };
+}
+
+function HistoryItem() 
+{
+    this.id = "";
+    this.url = "";
+    this.title = "";
+    this.lastVisitTime = 1.0;
+    this.visitCount = 0;
+    this.typedCount = 0;
+}
+
+function VisitItem() 
+{
+    this.id = "";
+    this.visitId = "";
+    this.visitTime = 1.0;
+    this.referringVisitId = "";
+    this.transition = "";
 }
 
 function Port()
