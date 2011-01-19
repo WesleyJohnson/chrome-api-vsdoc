@@ -169,7 +169,45 @@ chrome =
             ///<param name="callback" type="Function"> (optional) function() {...}</param>
         }
     },
+    cookies: {
+        get:
+        function (details, callback) {
+            ///<summary>Retrieves information about a single cookie. If more than one cookie of the same name exists for the given URL, the one with the longest path will be returned. For cookies with the same path length, the cookie with the earliest creation time will be returned.</summary>
+            ///<param name="details" type="Object">{ url: (string), name: (string), storeId: (optional string) }</param>
+            ///<param name="callback" type="Function">function(Cookie cookie) {...}</param>
+        },
+        getAll:
+        function (details, callback) {
+            ///<summary>Retrieves all cookies from a single cookie store that match the given information. The cookies returned will be sorted, with those with the longest path first. If multiple cookies have the same path length, those with the earliest creation time will be first.</summary>
+            ///<param name="details" type="Object">{ url: (optional string), name: (optional string), domain: (optional string), path: (optional string), secure: (optional boolean), session: (optional boolean), storeId: (optional string) }</param>
+            ///<param name="callback" type="Function">function(array of Cookie cookies) {...}</param>
+        },
+        getAllCookieStores:
+        function (callback) {
+            ///<summary>Lists all existing cookie stores.</summary>
+            ///<param name="callback" type="Function">function(array of CookieStore cookieStores) {...}</param>
+        },
+        remove:
+        function (details) {
+            ///<summary>Deletes a cookie by name.</summary>
+            ///<param name="details" type="Object">{ url: (string), name: (string), storeId: (optional string) }</param>
+        },
+        set:
+        function (details) {
+            ///<summary>Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.</summary>
+            ///<param name="details" type="Object">{ url: (string), name: (optional string), value: (optional string), domain: (optional string), path: (optional string), secure: (optional boolean), httpOnly: (optional boolean), expirationDate: (optional number), storeId: (optional string) }</param>
+        },
+        onChanged: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when a cookie is set or removed.</summary>
+                ///<param name="listener" type="Function">function(object changeInfo) {...}</param>
+            }
+        }
+    },
     extension: {
+        lastError: { message: "" },
+        inIncognitoContext: { message: false },
         connect:
         function (extensionId, connectInfo) {
             ///<summary>Attempts to connect to other listeners within the extension (such as the extension's background page). This is primarily useful for content scripts connecting to their extension processes. Extensions may connect to content scripts embedded in tabs via chrome.tabs.connect().</summary>
@@ -288,13 +326,82 @@ chrome =
         getAcceptLanguages:
         function (callback) {
             ///<summary>Gets the accept-languages of the browser. This is different from the locale used by the browser; to get the locale, use window.navigator.language.</summary>
-            ///<param name="listener" type="Function">function(array of string languages) {...}</param>
+            ///<param name="callback" type="Function">function(array of string languages) {...}</param>
         },
         getMessage:
         function (messageName, substitutions) {
             ///<summary>Gets the localized string for the specified message. If the message is missing, this method returns an empty string (''). If the format of the getMessage() call is wrong — for example, messageName is not a string or the substitutions array is empty or has more than 9 elements — this method returns undefined.</summary>
             ///<param name="messageName" type="String">The name of the message, as specified in the messages.json file.</param>
             ///<param name="substitutions" type="String">1 - 9 substitution strings, if the message requires any.</param>
+        }
+    },
+    idle: {
+        queryState:
+        function (thresholdSeconds, callback) {
+            ///<summary>Returns the current state of the browser.</summary>
+            ///<param name="thresholdSeconds" type="int">Threshold, in seconds, used to determine when a machine is in the idle state.</param>
+            ///<param name="callback" type="Function">(string newState) {...}</param>
+        },
+        onStateChanged: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when the browser changes to an active state. Currently only reports the transition from idle to active.</summary>
+                ///<param name="listener" type="Function">function(string newState) {...}</param>
+            }
+        }
+    },
+    management: {
+        getAll:
+        function (callback) {
+            ///<summary>Returns a list of information about installed extensions and apps.</summary>
+            ///<param name="callback" type="Function">function(array of ExtensionInfo result) {...}</param>
+        },
+        launchApp:
+        function (id, callback) {
+            ///<summary>Launches an application.</summary>
+            ///<param name="id" type="String">The extension id of the application.<param>
+            ///<param name="callback" type="Function"> (optional) function() {...}<param>
+        },
+        setEnabled:
+        function (id, enabled, callback) {
+            ///<summary>Enable or disable an app or extension.</summary>
+            ///<param name="id" type="String">This should be the id from an item of ExtensionInfo.<param>
+            ///<param name="enabled" type="Boolean">Whether this item should enabled or disabled.<param>
+            ///<param name="callback" type="Function"> (optional) function() {...}<param>
+        },
+        uninstall:
+        function (id, callback) {
+            ///<summary>Uninstall a currently installed app or extension.</summary>
+            ///<param name="id" type="String">This should be the id from an item of ExtensionInfo.<param>
+            ///<param name="callback" type="Function"> (optional) function() {...}<param>
+        },
+        onDisabled: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when an app or extension has been disabled.</summary>
+                ///<param name="listener" type="Function">function(ExtensionInfo info) {...}</param>
+            }
+        },
+        onEnabled: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when an app or extension has been enabled.</summary>
+                ///<param name="listener" type="Function">function(ExtensionInfo info) {...}</param>
+            }
+        },
+        onInstalled: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when an app or extension has been installed.</summary>
+                ///<param name="listener" type="Function">function(ExtensionInfo info) {...}</param>
+            }
+        },
+        onUninstalled: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when an app or extension has been uninstalled.</summary>
+                ///<param name="listener" type="Function">function(string id) {...}</param>
+            }
         }
     },
     pageAction: {
@@ -466,6 +573,7 @@ chrome =
         }
     },
     windows: {
+        WINDOW_ID_NONE: 0,
         create:
         function (createData, callback) {
             ///<summary>Creates (opens) a new browser with any optional sizing, position or default URL provided.</summary>
@@ -517,7 +625,7 @@ chrome =
         onFocusChanged: {
             addListener:
             function (listener) {
-                ///<summary>Fired when the currently focused window changes.</summary>
+                ///<summary>Fired when the currently focused window changes. Will be chrome.windows.WINDOW_ID_NONE if all chrome windows have lost focus. Note: On some Linux window managers, WINDOW_ID_NONE will always be sent immediately preceding a switch from one chrome window to another.</summary>
                 ///<param name="listener" type="Function">function(integer windowId) {...}</param>
             }
         },
@@ -622,4 +730,43 @@ function Window()
     this.height = 0;
     this.tabs = [new Tab()];
     this.icognito = false;
+    this.type = "";
+}
+
+function IconInfo() 
+{
+    this.size = 0;
+    this.url = "";
+}
+
+function ExtensionInfo() 
+{
+    this.id = "";
+    this.name = "";
+    this.version = "";
+    this.enabled = false;
+    this.isApp = false;
+    this.appLaunchUrl = "";
+    this.optionsUrl = "";
+    this.icons = [new IconInfo()];
+}
+
+function Cookie() 
+{
+    this.name = "";
+    this.value = "";
+    this.domain = "";
+    this.hostOnly = false;
+    this.path = "";
+    this.secure = false;
+    this.httpOnly = false;
+    this.session = false;
+    this.expirationDate = 1.0;
+    this.storeId = "";
+}
+
+function CookieStore() 
+{
+    this.id = "";
+    this.tabIds = [0, 1];
 }
