@@ -35,6 +35,12 @@ chrome =
             ///<param name="numberOfItems" type="int">The maximum number of items to return.</param>
             ///<param name="callback" type="Function">function(BookmarkTreeNode result) {...}</param>
         },
+        getSubTree:
+        function (id, callback) {
+            ///<summary>Retrieves part of the Bookmarks hierarchy, starting at the specified node.</summary>
+            ///<param name="id" type="String">The ID of the root of the subtree to retrieve</param>
+            ///<param name="callback" type="Function">function(BookmarkTreeNode result) {...}</param>
+        },
         getTree:
         function (callback) {
             ///<summary>Retrieves the entire Bookmarks hierarchy.</summary>
@@ -91,6 +97,20 @@ chrome =
             function (listener) {
                 ///<summary>Fired when a bookmark or folder is created.</summary>
                 ///<param name="listener" type="Function">function(string id, BookmarkTreeNode bookmark) {...}</param>
+            }
+        },
+        onImportBegan: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when a bookmark import session is begun. Expensive observers should ignore handleCreated updates until onImportEnded is fired. Observers should still handle other notifications immediately.</summary>
+                ///<param name="listener" type="Function"></param>
+            }
+        },
+        onImportEnded: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when a bookmark import session is ended.</summary>
+                ///<param name="listener" type="Function"></param>
             }
         },
         onMoved: {
@@ -237,12 +257,27 @@ chrome =
             ///<summary>Returns an array of the JavaScript 'window' objects for each of the pages running inside the current extension. This includes background pages and tabs.</summary>
             ///<returns>( array of DOMWindow ) Array of global window objects</returns>
         },
+        isAllowedFileSchemeAccess:
+        function (callback) {
+            ///<summary>Retrieves the state of the extension's access to the 'file://' scheme (as determined by the user-controlled 'Allow access to File URLs' checkbox.</summary>
+            ///<param name="callback" type="Function">function(boolean isAllowedAccess) {...}</param> 
+        },
+        isAllowedIncognitoAccess:
+        function (callback) {
+            ///<summary>Retrieves the state of the extension's access to Incognito-mode (as determined by the user-controlled 'Allowed in Incognito' checkbox.</summary>
+            ///<param name="callback" type="Function">function(boolean isAllowedAccess) {...}</param> 
+        },
         sendRequest:
         function (extensionId, request, responseCallback) {
             ///<summary>Sends a single request to other listeners within the extension. Similar to chrome.extension.connect, but only sends a single request with an optional response.</summary>
             ///<param name="extensionId" type="String" > (optional) The extension ID of the extension you want to connect to. If omitted, default is your own extension.</param>
             ///<param name="request" type="any"></param>
             ///<param name="responseCallback" type="Function" > (optional) function(any response){...}</param>
+        },
+        setUpdateUrlData:
+        function (data) {
+            ///<summary>Sets the value of the ap CGI parameter used in the extension's update URL. This value is ignored for extensions that are hosted in the Chrome Extension Gallery.</summary>
+            ///<param name="data" type="String"></param>
         },
         onConnect: {
             addListener:
@@ -270,6 +305,15 @@ chrome =
             function (listener) {
                 ///<summary>Fired when a request is sent from another extension.</summary>
                 ///<param name="listener" type="Function">function(any request, MessageSender sender, function sendResponse) {...}</param>
+            }
+        }
+    },
+    fileBrowserHandler: {
+        onExecute: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when file system action is executed from ChromeOS file browser.</summary>
+                ///<param name="listener" type="Function">function(string id, FileHandlerExecuteEventDetails details) {...}</param>
             }
         }
     },
@@ -351,10 +395,28 @@ chrome =
         }
     },
     management: {
+        get:
+        function (id, callback) {
+            ///<summary>Returns information about the installed extension or app that has the given ID.</summary>
+            ///<param name="id" type="String">The ID from an item of ExtensionInfo.<param>
+            ///<param name="callback" type="Function">function(ExtensionInfo result) {...}</param>
+        },
         getAll:
         function (callback) {
             ///<summary>Returns a list of information about installed extensions and apps.</summary>
             ///<param name="callback" type="Function">function(array of ExtensionInfo result) {...}</param>
+        },
+        getPermissionWarningsById:
+        function (id, callback) {
+            ///<summary>Returns a list of permission warnings for the given extension id.</summary>
+            ///<param name="id" type="String">The ID of an already installed extension.<param>
+            ///<param name="callback" type="Function">function(array of string permissionWarnings) {...}<param>
+        },
+        getPermissionWarningsByManifest:
+        function (id, callback) {
+            ///<summary>Returns a list of permission warnings for the given extension manifest string. Note: This function can be used without requesting the 'management' permission in the manifest.</summary>
+            ///<param name="manifestStr" type="String">Extension manifest JSON string.<param>
+            ///<param name="callback" type="Function">function(array of string permissionWarnings) {...}<param>
         },
         launchApp:
         function (id, callback) {
@@ -404,6 +466,41 @@ chrome =
             }
         }
     },
+    omniBox: {
+        setDefaultSuggestion:
+        function (suggestion) {
+            ///<summary>Sets the description and styling for the default suggestion. The default suggestion is the text that is displayed in the first suggestion row underneath the URL bar.</summary>
+            ///<param name="suggestion" type="Object">{description: (string)}</param>
+        },
+        onInputCancelled: {
+            addListener:
+            function (listener) {
+                ///<summary>User has ended the keyword input session without accepting the input.</summary>
+                ///<param name="listener" type="Function">function() {...}</param>
+            }
+        },
+        onInputChanged: {
+            addListener:
+            function (listener) {
+                ///<summary>User has changed what is typed into the omnibox.</summary>
+                ///<param name="listener" type="Function">function(string text, Function suggest) {...}</param>
+            }
+        },
+        onInputEntered: {
+            addListener:
+            function (listener) {
+                ///<summary>User has accepted what is typed into the omnibox.</summary>
+                ///<param name="listener" type="Function">function(string text) {...}</param>
+            }
+        },
+        onInputStarted: {
+            addListener:
+            function (listener) {
+                ///<summary>User has started a keyword input session by typing the extension's keyword. This is guaranteed to be sent exactly once per input session, and before any onInputChanged events.</summary>
+                ///<param name="listener" type="Function">function() {...}</param>
+            }
+        }
+    },
     pageAction: {
         hide:
         function (tabId) {
@@ -435,6 +532,16 @@ chrome =
             function (listener) {
                 ///<summary>Fired when a page action icon is clicked. This event will not fire if the page action has a popup.</summary>
                 ///<param name="listener" type="Function">function(Tab tab) {...}</param>
+            }
+        }
+    },
+    proxy: {
+        settings: {},
+        onProxyError: {
+            addListener:
+            function (listener) {
+                ///<summary>Notifies about proxy errors.</summary>
+                ///<param name="listener" type="Function">function(object details) {...}</param>
             }
         }
     },
@@ -481,6 +588,11 @@ chrome =
             ///<summary>Gets details about all tabs in the specified window.</summary>
             ///<param name="windowId" type="int" > (optional) Defaults to the current window.</param>
             ///<param name="callback" type="Function">function(array of Tab tabs) {...}</param>            
+        },
+        getCurrent:
+        function (callback) {
+            ///<summary>Gets the tab that this script call is being made from. May be undefined if called from a non-tab context (for example: a background page or popup view).</summary>
+            ///<param name="callback" type="Function">function(Tab tab) {...}</param> 
         },
         getSelected:
         function (windowId, callback) {
@@ -569,6 +681,73 @@ chrome =
             function (listener) {
                 ///<summary>Fires when a tab is updated.</summary>
                 ///<param name="listener" type="Function">function(integer TabId, object changeInfo, Tab tab) {...}</param>
+            }
+        }
+    },
+    tts: {
+        getVoices:
+        function (callback) {
+            ///<summary>Gets an array of all available voices.</summary>
+            ///<param name="callback" type="Function" >function(array of TtsVoice voices) {...}</param>            
+        },
+        isSpeaking:
+        function (callback) {
+            ///<summary>Checks if the engine is currently speaking.</summary>
+            ///<param name="callback" type="Function" >function(boolean speaking) {...}</param>   
+        },
+        speak:
+        function (utterance, options, callback) {
+            ///<summary>Speaks text using a text-to-speech engine.</summary>
+            ///<param name="utterance" type="string" >The text to speak, either plain text or a complete, well-formed SSML document. Speech engines that do not support SSML will strip away the tags and speak the text. The maximum length of the text is 32,768 characters.</param>
+            ///<param name="options" type="Object" > (optional) {enqueue: (optional boolean), voiceName: (optional string), extensionId: (optional string), lang: (optional string), gender: (optional string), rate" (option number), pitch: (optional number), volume: (optional number), requriedEventTypes: (optional array of string), desiredEventTypes: (optional array of string), onEvent: (option function)}</param>
+            ///<param name="callback" type="Function" > (optional) function() {...}</param>
+        },
+        stop:
+        function () {
+            ///<summary>Stops any current speech.</summary>
+        }
+    },
+    ttsEngine: {
+        onSpeak: {
+            addListener:
+            function (listener) {
+                ///<summary></summary>
+                ///<param name="listener" type="Function">function(string utterance, object options, Function sendTtsEvent) {...}</param>
+            }
+        },
+        onStop: {
+            addListener:
+            function (listener) {
+                ///<summary>Fired when a call is made to tts.stop and this extension may be in the middle of speaking. If an extension receives a call to onStop and speech is already stopped, it should do nothing (not raise an error).</summary>
+            }
+        }
+    },
+    types: {
+        ChromeSetting: {
+            clear:
+            function (details, callback) {
+                ///<summary>Clears the setting. This way default settings can become effective again.</summary>
+                ///<param name="details" type="Object">{scope: (string)}</param>
+                ///<param name="callback" type="Function">function() {...}</param>
+            },
+            get:
+            function (details, callback) {
+                ///<summary>Gets the value of a setting.</summary>
+                ///<param name="details" type="Object">{incognito: (boolean)}</param>
+                ///<param name="callback" type="Function">function(object details) {...}</param>
+            },
+            set:
+            function (details, callback) {
+                ///<summary>Sets the value of a setting.</summary>
+                ///<param name="details" type="Object">{value: (any), scope: (string)}</param>
+                ///<param name="callback" type="Function">function() {...}</param>
+            },
+            onChange: {
+                addListener:
+                function (listener) {
+                    ///<summary>Fired when the value of the setting changes.</summary>
+                    ///<param name="listener" type="Function">function(object details) {...}</param>
+                }
             }
         }
     },
@@ -713,6 +892,7 @@ function Tab()
     this.index = 0;
     this.windowId = 0;
     this.selected = false;
+    this.pinned = false;
     this.url = "";
     this.title = "";
     this.faviconUrl = "";
@@ -743,12 +923,18 @@ function ExtensionInfo()
 {
     this.id = "";
     this.name = "";
+    this.description = "";
     this.version = "";
+    this.mayDisable = false;
     this.enabled = false;
     this.isApp = false;
     this.appLaunchUrl = "";
+    this.homepageUrl = "";
+    this.offlineEnabled = false;
     this.optionsUrl = "";
     this.icons = [new IconInfo()];
+    this.permissions = [""];
+    this.hostPermissions = [""];
 }
 
 function Cookie() 
@@ -769,4 +955,76 @@ function CookieStore()
 {
     this.id = "";
     this.tabIds = [0, 1];
+}
+
+function OnClickData() 
+{
+    this.menuItemID = 0;
+    this.parentMenuItemId = 0;
+    this.mediaType = "";
+    this.linkUrl = "";
+    this.srcUrl = "";
+    this.pageUrl = "";
+    this.frameUrl = "";
+    this.selectionText = "";
+    this.editable = "";
+}
+
+function FileHandlerExecuteEventDetails() 
+{
+    this.entries = [];
+    this.tab_id = 0;
+}
+
+function SuggestResult() 
+{
+    this.content = "";
+    this.description = "";
+}
+
+function ProxyServer() 
+{
+    this.scheme = ["http", "https", "socks4", "socks5"];
+    this.host = "";
+    this.port = 0;
+}
+
+function ProxyRules() 
+{
+    this.singleProxy = new ProxyServer();
+    this.proxyForHttp = new ProxyServer();
+    this.proxyForHttps = new ProxyServer();
+    this.proxyForFtp = new ProxyServer();
+    this.fallbackProxy = new ProxyServer();
+    this.bypassList = [""];
+}
+
+function PacScript() 
+{
+    this.url = "";
+    this.data - "";
+    this.mandatory = false;
+}
+
+function ProxyConfig() 
+{
+    this.rules = new ProxyRules();
+    this.pacScript = new PacScript();
+    this.mode = ["direct", "auto_detect", "pac_script", "fixed_servers", "system"];
+}
+
+function TtsEvent() 
+{
+    this.type = ["start", "end", "word", "sentence", "marker", "interrupted", "cancelled", "error"];
+    this.charIndex = 0.0;
+    this.errorMessage = "";
+}
+
+function TtsVoice() 
+{
+    this.voiceName = "";
+    this.lang = "";
+    this.gender = ["male", "female"];
+    this.extensionId = "";
+    this.eventTypes = [""];
 }
