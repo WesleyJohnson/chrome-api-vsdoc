@@ -9,24 +9,52 @@ By referencing the chrome-api-vsdoc.js file in your extension's source code, Vis
 
 = Supported APIs =
 
-All of the API calls listed on the [http://code.google.com/chrome/extensions/api_index.html Chrome API] page as of November 3rd, 2011 are supported.
+All of the API calls listed on the [http://code.google.com/chrome/extensions/api_index.html Chrome API] page as of December 7th, 2013 are supported.
+ * chrome.alarms
  * chrome.bookmarks
  * chrome.browserAction
+ * chrome.browsingData
+ * chrome.commands
+ * chrome.contentSettings
  * chrome.contextMenu
  * chrome.cookies
  * chrome.extension
+ * chrome.debugger
+ * chrome.devtools.inspectedWindow
+ * chrome.devtools.network
+ * chrome.devtools.panels
+ * chrome.downloads
+ * chrome.events
+ * chrome.extension
  * chrome.fileBrowserHandler (Chrome OS only)
+ * chrome.fontSettings
  * chrome.history
  * chrome.i18n
+ * chrome.identity
  * chrome.idle
+ * chrome.input
  * chrome.management
+ * chrome.notifications
  * chrome.omniBox
  * chrome.pageAction
+ * chrome.pageCapture
+ * chrome.permissions
+ * chrome.power
+ * chrome.privacy
  * chrome.proxy
+ * chrome.pushMessaging
+ * chrome.runtime
+ * chrome.storage
+ * chrome.system.storage
+ * chrome.tabCapture
  * chrome.tabs
+ * chrome.topSites
  * chrome.tts
  * chrome.ttsEngine
  * chrome.types
+ * chrome.webNavigation
+ * chrome.webRequest
+ * chrome.webstore
  * chrome.windows
 
 = How to use =
