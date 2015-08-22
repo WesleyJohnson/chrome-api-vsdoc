@@ -64,3 +64,10 @@ To take advantage of this project when authoring your Chrome Extensions, take th
    `///<reference path="chrome-api-vsdoc.js"/>`
 
 #####Please be aware that this file is intended to be used for intellisense only and should not be used inside script tags in your project. You can safely remove the chrome-api-vsdoc.js file before publishing your extension..
+
+##Contributing
+* Open GitHub issues
+* Submit Pull Request
+
+##License
+chrome-api-vsdoc is licensed under [Apache v2.0](/LICENSE)
