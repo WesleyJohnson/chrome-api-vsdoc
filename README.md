@@ -1,8 +1,8 @@
+# This repo is no longer maintained and is guite outdated.
+
 # chrome-api-vsdoc
 This project was designed to aid authors in the creation of Google Chrome Extensions when authoring in the Visual Studio IDE. By referencing the chrome-api-vsdoc.js file in your extension's source code, Visual Studio can provide 
 intellisense when programming against the Chrome APIs.
-
-![alt "chrome-api-vsdoc](http://i41.tinypic.com/ic036s.jpg)
 
 ##Supported APIs
 All of the API calls listed on the Chrome API page as of December 7th, 2013 are supported.
